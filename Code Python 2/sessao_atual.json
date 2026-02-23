@@ -1,0 +1,9 @@
+{
+    "taxa_spawn_atual": 10.0, 
+    "turno_atual": 0, 
+    "total_inimigos_vivos": 3, 
+    "taxa_spawn_base": 10.0, 
+    "obstaculos_destruidos_sessao": 0, 
+    "inimigos_iniciais": 3, 
+    "bombas_plantadas_sessao": 0
+}

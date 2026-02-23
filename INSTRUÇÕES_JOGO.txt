@@ -1,0 +1,30 @@
+BOMBARDEIO 1000GRAU - MANUAL DE INSTRUÇÕES
+============================================
+
+OBJETIVO:
+Sobreviva aos inimigos e explosões o máximo de tempo possível.
+Destrua obstáculos (▢) para abrir caminho e fugir de inimigos (E).
+
+COMANDOS:
+- w: Mover para Cima
+- s: Mover para Baixo
+- a: Mover para Esquerda
+- d: Mover para Direita
+- b: Plantar Bomba (Demora 3 turnos para explodir. Cuidado!)
+- q: Sair do Jogo
+
+LEGENDA MAPA:
+@ : Jogador
+E : Inimigo
+# : Parede Indestrutível
+▢ : Obstáculo Destrutível
+O : Bomba (Tica até explodir)
+* : Explosão
+_ : Espaço Vazio
+
+DICA:
+- Bombas explodem em cruz (alcance 2).
+- Inimigos surgem com o tempo.
+- Seus status (turnos, bombas usadas) são salvos em 'estatisticas_globais.json'.
+
+Boa sorte!
