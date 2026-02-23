@@ -1,26 +1,30 @@
 {
     "fator_dificuldade_inimigos": 1.0, 
-    "historico_causas_termino": [
-        "inimigo"
-    ], 
-    "historico_turnos_sobrevividos": [
-        55
-    ], 
+    "alcance_bomba": 2, 
     "historico_obstaculos_destruidos_partida": [
-        9
+        9, 
+        6
     ], 
-    "media_turnos": 55.0, 
-    "soma_obstaculos_destruidos": 9, 
-    "soma_turnos_sobrevividos": 55, 
+    "taxa_destruicao_media": 39.47, 
+    "media_bombas": 10.0, 
+    "soma_obstaculos_destruidos": 15, 
+    "soma_turnos_sobrevividos": 84, 
     "historico_total_obstaculos": [
+        19, 
         19
     ], 
     "limite_max_turnos": 100, 
-    "densidade_obstaculos": 0.48, 
-    "alcance_bomba": 2, 
-    "soma_bombas_utilizadas": 14, 
-    "media_bombas": 14.0, 
-    "taxa_destruicao_media": 47.37, 
+    "densidade_obstaculos": 0.43, 
+    "historico_causas_termino": [
+        "inimigo", 
+        "inimigo"
+    ], 
+    "soma_bombas_utilizadas": 20, 
+    "historico_turnos_sobrevividos": [
+        55, 
+        29
+    ], 
+    "media_turnos": 42.0, 
     "tempo_detonacao_bomba": 3, 
-    "partidas_jogadas": 1
+    "partidas_jogadas": 2
 }

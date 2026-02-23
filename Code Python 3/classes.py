@@ -31,7 +31,6 @@ class Mapa:
         """
         Gera as paredes indestrutíveis fixas conforme o padrão do Bomberman:
         Linhas alternadas e colunas alternadas.
-        No seu desenho: Linhas 1, 3, 5, 7 (indices 0, 2, 4, 6) -> Colunas 2, 4, 6 (indices 1, 3, 5)
         """
         for l in range(0, self.__linhas, 2):  # Linhas: 0, 2, 4, 6
             for c in range(1, self.__colunas, 2):  # Colunas: 1, 3, 5
@@ -55,7 +54,7 @@ class Mapa:
                 if self.__celulas[l][c] is None and (l, c) not in safe_zone:
                     candidatos.append((l, c))
 
-        # Define quantidade baseada na densidade (antes fixo 48%, agora dinâmico)
+        # Define quantidade baseada na densidade
         qtd_obstaculos = int(len(candidatos) * densidade)
         random.shuffle(candidatos)  # Embaralha para aleatoriedade
 
@@ -243,13 +242,6 @@ class Mapa:
                 spawnou = self.__tentar_spawnar_inimigo_extra()
                 if spawnou:
                     print(f"ALERTA: Um novo inimigo surgiu! (Turno {turno_atual})")
-                    # Reseta taxa: taxa anterior + 2%
-                    # Mas como calcular a "anterior"? 
-                    # Pelo enunciado: "Percentual inicial 10%... Quando surgir, reseta para percentual INICIAL ANTERIOR + 2%"
-                    # Vou assumir que o 'base_spawn_rate' passado já inclui os aumentos de falha (+5%).
-                    # Precisamos saber qual era o "piso" dessa taxa.
-                    # Simplificação para esta iteração: Reseta para 10 + (2 * numero_de_reseta)
-                    # Melhor: Vamos retornar um código indicando SUCESSO no spawn para o main controlar a taxa base.
                     return True, "SPAWN_SUCESSO"
             else:
                 # Não spawnou -> Aumenta chance para próxima
@@ -278,131 +270,6 @@ class Mapa:
             novo_inimigo = Inimigo(f"Inimigo_Extra") # Nome genérico
             self.adicionar_inimigo(novo_inimigo, lx, ly)
             return True
-        return False
-
-    def adicionar_bomba(self, x, y, tempo, alcance):
-        # Verifica se já existe uma bomba nesta posição visual ou na lista
-        for b in self.__bombas:
-            if b.x == x and b.y == y:
-                print("Você já plantou uma bomba nesse espaço, realize um movimento.")
-                return False
-
-        if self.posicao_valida(x, y):
-            print(f"Bomba plantada em ({x}, {y})")
-            nova_bomba = Bomba(x, y, tempo, alcance)
-            
-            # A bomba entra na lista de bombas. A célula continua sendo o Jogador (que está em cima).
-            # Quando o jogador sair, a célula vira Bomba.
-            self.__bombas.append(nova_bomba)
-            
-            # Atualiza estatística
-            GerenciadorEstado.incrementar_sessao("bombas_plantadas_sessao", 1)
-            return True
-        return False
-
-    def processar_bombas(self):
-        """
-        Atualiza timer das bombas e explode as que zeraram.
-        Retorna:
-        - True: Jogo segue.
-        - False: Jogo acabou (Jogador morreu na explosão).
-        """
-        bombas_para_explodir = []
-        
-        for bomba in self.__bombas:
-            if bomba.tick():
-                bombas_para_explodir.append(bomba)
-                
-        for bomba in bombas_para_explodir:
-            print(f"BOMBA EXPLODIU EM ({bomba.x}, {bomba.y})!")
-            
-            # Remove da lista
-            if bomba in self.__bombas:
-                self.__bombas.remove(bomba)
-            
-            # Remove da matriz se estiver visível (jogador saiu de cima)
-            if self.__celulas[bomba.x][bomba.y] == bomba:
-                self.__celulas[bomba.x][bomba.y] = None
-                
-            # Calcular explosão
-            morreu = self.calcular_explosao(bomba)
-            if morreu:
-                return False
-                
-        return True
-
-    def calcular_explosao(self, bomba):
-        """
-        Aplica dano da explosão em cruz (cima, baixo, esq, dir).
-        Retorna True se jogador morrer.
-        """
-        # Centro também é atingido
-        if self.verificar_dano_celula(bomba.x, bomba.y):
-            return True
-
-        direcoes = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        
-        for dx, dy in direcoes:
-            for dist in range(1, bomba.alcance + 1):
-                nx, ny = bomba.x + (dx * dist), bomba.y + (dy * dist)
-                
-                # Se saiu do mapa, para essa direção
-                if not self.posicao_valida(nx, ny):
-                    break
-                
-                # Verifica o que tem na célula
-                bloqueou_explosao = self.tratar_explosao_celula(nx, ny)
-                
-                # Se atingiu o jogador no processo
-                if self.verificar_dano_celula(nx, ny):
-                    return True
-                
-                if bloqueou_explosao:
-                    break
-        return False
-
-    def verificar_dano_celula(self, x, y):
-        """Verifica se o jogador está na coordenada e printa morte."""
-        for jog in self.__jogadores:
-            if jog.x == x and jog.y == y:
-                print(f"GAME OVER: Você explodiu sua própria bomba ou foi pego na explosão em ({x}, {y})!")
-                return True
-        return False
-
-    def tratar_explosao_celula(self, x, y):
-        """
-        Aplica efeito da explosão na célula (destrói obstáculo, mata inimigo).
-        Retorna True se a explosão deve PARAR nessa direção (parede/obstáculo).
-        """
-        conteudo = self.__celulas[x][y]
-        
-        if conteudo is None:
-            return False # Explosão continua passando pelo vazio
-            
-        if isinstance(conteudo, Obstaculo):
-            if conteudo.tipo == "indestrutivel":
-                 return True # Para a explosão
-            else:
-                 # Destrutível: Destrói e Para a explosão
-                 print(f"Obstáculo destruído em ({x}, {y})")
-                 self.__celulas[x][y] = None
-                 # TODO: Incrementar estatística de destruição na persistência
-                 return True 
-        
-        if isinstance(conteudo, Inimigo):
-             print(f"Inimigo ELIMINADO em ({x}, {y})!")
-             self.__celulas[x][y] = None
-             if conteudo in self.__inimigos:
-                 self.__inimigos.remove(conteudo)
-             return False # Explosão continua (mata quem estiver atrás?) -> No bomberman geralmente continua se for inimigo.
-        
-        if isinstance(conteudo, Bomba):
-             # Cadeia de explosões? Por enquanto não.
-             # Se for bomba, ela bloqueia? Não, geralmente explode junto.
-             # Simplificação: Passa direto.
-             return False
-             
-        # Se for jogador, já verificamos em 'verificar_dano_celula'
         return False
 
     def adicionar_bomba(self, x, y, tempo, alcance):

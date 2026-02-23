@@ -34,7 +34,6 @@ class Mapa(object):
         """
         Gera as paredes indestrutíveis fixas conforme o padrão do Bomberman:
         Linhas alternadas e colunas alternadas.
-        No seu desenho: Linhas 1, 3, 5, 7 (indices 0, 2, 4, 6) -> Colunas 2, 4, 6 (indices 1, 3, 5)
         """
         for l in range(0, self.__linhas, 2):  # Linhas: 0, 2, 4, 6
             for c in range(1, self.__colunas, 2):  # Colunas: 1, 3, 5
@@ -58,7 +57,7 @@ class Mapa(object):
                 if self.__celulas[l][c] is None and (l, c) not in safe_zone:
                     candidatos.append((l, c))
 
-        # Define quantidade baseada na densidade (antes fixo 48%, agora dinâmico)
+        # Define quantidade baseada na densidade
         qtd_obstaculos = int(len(candidatos) * densidade)
         random.shuffle(candidatos)  # Embaralha para aleatoriedade
 
