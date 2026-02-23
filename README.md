@@ -1,14 +1,10 @@
 # 💣 Bombardeio 1000Grau
 
-> **Versão:** 1.0.0
+> **Versão:** 1.0.0  **Compatibilidade:** Python 2.7 & Python 3.6+
 
-> **Compatibilidade:** Python 2.7 & Python 3.6+
-
-> **Autor:** Carlos de Lima Junior (CJ)
+> **Autor:** Carlos de Lima Junior (CJ) **Data: 19/02/2026**
 
 > **Contexto:** Avaliação à Distância 1 (AD1) - Programação com Interfaces Gráficas
-
-> **Data: 19/02/2026**
 
 ---
 
